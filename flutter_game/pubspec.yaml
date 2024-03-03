@@ -23,3 +23,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+assets:
+  assets/:
+    - turtle1.png
+    - turtle2.png
+    - trash.png
