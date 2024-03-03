@@ -186,7 +186,45 @@ class _GameScreenState extends State<GameScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Trash Dash'),
+        title: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Trash Dash',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            Text(
+              'A game where you assist Torrent the Turtle in saving the Water World by collecting all the trash thrown by humans in his home',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Text(
+                  'Score: $score',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+                SizedBox(width: 24), // Add some space (adjust as needed)
+              ],
+            ),
+          ),
+        ],
+        centerTitle: false,
+        backgroundColor: Colors.teal,
       ),
       body: RawKeyboardListener(
         focusNode: FocusNode(),
@@ -244,21 +282,9 @@ class _GameScreenState extends State<GameScreen> {
                 height: 100,
               ),
             ),
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Text(
-                  'Score: $score',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
           ],
         ),
       ),
     );
   }
 }
-
