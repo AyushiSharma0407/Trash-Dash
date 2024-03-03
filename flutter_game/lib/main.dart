@@ -67,24 +67,12 @@ class _GameScreenState extends State<GameScreen> {
   void startSpawningTrash() {
     Timer.periodic(Duration(seconds: 2), (timer) {
       if (!gameOver && score <= 99) {
-        double trashX = Random().nextDouble() * MediaQuery
-            .of(context)
-            .size
-            .width;
-        double trashY = Random().nextDouble() * MediaQuery
-            .of(context)
-            .size
-            .height;
+        double trashX = Random().nextDouble() * MediaQuery.of(context).size.width;
+        double trashY = Random().nextDouble() * MediaQuery.of(context).size.height;
         double trashVelocity = Random().nextDouble() * 2 - 1;
 
-        trashX = max(0, min(trashX, MediaQuery
-            .of(context)
-            .size
-            .width - 50));
-        trashY = max(0, min(trashY, MediaQuery
-            .of(context)
-            .size
-            .height - 50));
+        trashX = max(0, min(trashX, MediaQuery.of(context).size.width - 50));
+        trashY = max(0, min(trashY, MediaQuery.of(context).size.height - 50));
 
         Trash trash = Trash(x: trashX, y: trashY, velocity: trashVelocity);
         setState(() {
@@ -104,10 +92,7 @@ class _GameScreenState extends State<GameScreen> {
         setState(() {
           trash.x += trash.velocity;
 
-          if (trash.x < 0 || trash.x > MediaQuery
-              .of(context)
-              .size
-              .width - 50) {
+          if (trash.x < 0 || trash.x > MediaQuery.of(context).size.width - 50) {
             trash.velocity *= -1;
           }
         });
@@ -119,10 +104,7 @@ class _GameScreenState extends State<GameScreen> {
 
   void regenerateScene() {
     setState(() {
-      playerYPosition = MediaQuery
-          .of(context)
-          .size
-          .height - 50.0;
+      playerYPosition = MediaQuery.of(context).size.height - 50.0;
     });
   }
 
@@ -200,10 +182,7 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
+    double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       appBar: AppBar(
@@ -227,9 +206,16 @@ class _GameScreenState extends State<GameScreen> {
         },
         child: Stack(
           children: [
+            // Background Image
             Container(
-              color: Colors.blue,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('background.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
+            // Other game elements
             Positioned(
               bottom: 0,
               left: 0,
@@ -275,3 +261,4 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 }
+
