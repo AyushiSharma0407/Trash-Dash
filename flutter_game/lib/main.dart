@@ -38,6 +38,7 @@ class _GameScreenState extends State<GameScreen> {
   int score = 0;
   bool gameOver = false;
   bool isPlayerWalk1 = true;
+  bool showAlternateBackground = false;
 
   @override
   void initState() {
@@ -49,7 +50,7 @@ class _GameScreenState extends State<GameScreen> {
 
   void startPlayerMovement() {
     if (!gameOver) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
         setState(() {
           playerYPosition -= playerSpeed;
 
@@ -130,6 +131,14 @@ class _GameScreenState extends State<GameScreen> {
   void increaseScore() {
     setState(() {
       score++;
+      if (score % 25 == 0 && score <= 100) {
+        showAlternateBackground = true;
+        Timer(Duration(milliseconds: 500), () {
+          setState(() {
+            showAlternateBackground = false;
+          });
+        });
+      }
     });
   }
 
@@ -145,7 +154,8 @@ class _GameScreenState extends State<GameScreen> {
         return AlertDialog(
           title: Text('Game Over'),
           content: Text(
-              'You let too much trash accumulate!\nYour Score: $score'),
+            'You let too much trash accumulate!\nYour Score: $score',
+          ),
         );
       },
     );
@@ -244,7 +254,7 @@ class _GameScreenState extends State<GameScreen> {
         },
         child: Stack(
           children: [
-            // Background Image
+            // Original Background Image
             Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
@@ -253,6 +263,16 @@ class _GameScreenState extends State<GameScreen> {
                 ),
               ),
             ),
+            // Alternate Background (overlapping)
+            if (showAlternateBackground)
+              Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('background25.png'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
             // Other game elements
             Positioned(
               bottom: 0,
