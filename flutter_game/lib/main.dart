@@ -25,6 +25,14 @@ class Trash {
   Trash({required this.x, required this.y, required this.velocity});
 }
 
+class Bullet {
+  double x;
+  double y;
+  double velocity;
+
+  Bullet({required this.x, required this.y, required this.velocity});
+}
+
 class GameScreen extends StatefulWidget {
   @override
   _GameScreenState createState() => _GameScreenState();
@@ -35,6 +43,7 @@ class _GameScreenState extends State<GameScreen> {
   double playerXPosition = 50.0;
   double playerSpeed = 1.0;
   List<Trash> trashList = [];
+  List<Bullet> bulletList = [];
   int score = 0;
   bool gameOver = false;
   bool isPlayerWalk1 = true;
@@ -123,6 +132,19 @@ class _GameScreenState extends State<GameScreen> {
       return isColliding;
     });
 
+    bulletList.removeWhere((bullet) {
+      bool isColliding = bullet.x < playerXPosition + 50 &&
+          bullet.x + 10 > playerXPosition &&
+          bullet.y < playerYPosition + 100 &&
+          bullet.y + 50 > playerYPosition;
+
+      if (isColliding) {
+        stopGame();
+      }
+
+      return isColliding;
+    });
+
     if (!gameOver && trashList.length > 12) {
       stopGame();
     }
@@ -131,6 +153,9 @@ class _GameScreenState extends State<GameScreen> {
   void increaseScore() {
     setState(() {
       score++;
+      if (score == 50) {
+        startBulletSpawning();
+      }
       if (score % 25 == 0 && score <= 100) {
         showAlternateBackground = true;
         Timer(Duration(milliseconds: 500), () {
@@ -154,7 +179,7 @@ class _GameScreenState extends State<GameScreen> {
         return AlertDialog(
           title: Text('Game Over'),
           content: Text(
-            'You let too much trash accumulate!\nYour Score: $score',
+            'You could not save the ocean!\nYour Score: $score',
           ),
         );
       },
@@ -190,6 +215,40 @@ class _GameScreenState extends State<GameScreen> {
     });
   }
 
+  void startBulletSpawning() {
+    Timer.periodic(Duration(seconds: 3), (timer) {
+      if (!gameOver) {
+        double bulletX = Random().nextDouble() * MediaQuery.of(context).size.width;
+        double bulletVelocity = Random().nextDouble() * 2 + 1;
+
+        Bullet bullet = Bullet(x: bulletX, y: 0, velocity: bulletVelocity);
+        setState(() {
+          bulletList.add(bullet);
+        });
+
+        startBulletMovement(bullet);
+      } else {
+        timer.cancel();
+      }
+    });
+  }
+
+  void startBulletMovement(Bullet bullet) {
+    Timer.periodic(Duration(milliseconds: 20), (timer) {
+      if (!gameOver) {
+        setState(() {
+          bullet.y += bullet.velocity;
+
+          if (bullet.y > MediaQuery.of(context).size.height) {
+            bulletList.remove(bullet);
+          }
+        });
+      } else {
+        timer.cancel();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -209,7 +268,7 @@ class _GameScreenState extends State<GameScreen> {
               ),
             ),
             Text(
-              'A game where you assist Torrent the Turtle in saving the Water World by collecting all the trash thrown by humans in his home',
+              'A game where you assist Torrent the Turtle in saving the Water World from the humans by collecting all the trash and saving him from the bullets',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
@@ -291,6 +350,16 @@ class _GameScreenState extends State<GameScreen> {
                   'trash.png',
                   width: 50,
                   height: 50,
+                ),
+              ),
+            for (var bullet in bulletList)
+              Positioned(
+                left: bullet.x,
+                top: bullet.y,
+                child: Container(
+                  width: 10,
+                  height: 50,
+                  color: Colors.red,
                 ),
               ),
             Positioned(
