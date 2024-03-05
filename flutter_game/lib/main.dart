@@ -133,8 +133,9 @@ class _GameScreenState extends State<GameScreen> {
     });
 
     bulletList.removeWhere((bullet) {
+      // Adjust collision detection to consider only the arrow body
       bool isColliding = bullet.x < playerXPosition + 50 &&
-          bullet.x + 10 > playerXPosition &&
+          bullet.x + 20 > playerXPosition &&
           bullet.y < playerYPosition + 100 &&
           bullet.y + 50 > playerYPosition;
 
@@ -356,10 +357,10 @@ class _GameScreenState extends State<GameScreen> {
               Positioned(
                 left: bullet.x,
                 top: bullet.y,
-                child: Container(
-                  width: 10,
-                  height: 50,
-                  color: Colors.red,
+                child: Image.asset(
+                  'arrow.png', // Replace with the correct image asset path for the bullet
+                  width: 70, // Adjust according to the actual width of your arrow sprite
+                  height: 70, // Adjust according to the actual height of your arrow sprite
                 ),
               ),
             Positioned(
